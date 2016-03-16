@@ -1,5 +1,6 @@
 #!/usr/bin python
-import os, sys, time, numpy
+import os, sys, time, numpy, plotly
+from plotly.graph_objs import Scatter, Layout
 from pprint import pprint
 import json 
 
@@ -8,7 +9,6 @@ class Song:
     artist = ""
     genre = ""
     segments = []
-
 
 dataset = {}  #stores filenames by genre
 for directory in os.listdir(sys.argv[1]):
@@ -46,12 +46,22 @@ for genre in dataset.keys():
     # CALCULATE GAUSSIAN DISTRIBUTION
     means, covariance, inversecov = {}, {}, {}
     sys.stdout.write("Calculating covariance for %s...\n" % genre)
-    covariance[genre] = numpy.cov(features[genre])
+    covariance[genre] = numpy.cov(numpy.transpose(features[genre]))
     sys.stdout.write("Calculating inverse for %s...\n" % genre)
-    inversecov[genre] = numpy.linalg.inv(covariance[genre])
+    inversecov[genre] = numpy.linalg.inv(covariance[genre])    
     print(covariance[genre])
     print(inversecov[genre])
 
+plotly.offline.plot({
+    "data": [
+        Scatter(x=features["rock"][0], 
+                y=features["rock"][1])  ''' how to show all genres on one plot? '''
+    ],
+    "layout": {"title":"Lots of stuff happening here!"}
+}, 
+    filename='index.html',
+    auto_open=False
+)
 
 ''' PRINT FEATURES MATRIX '''
 for genre in features.keys():
