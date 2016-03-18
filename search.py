@@ -31,9 +31,9 @@ while not DEBUG:
 ############################
 ## DOWNLOAD TIMBRE FEATURES
 
+fh.write("# "+ts.title+" - "+ts.artist_name+"\n") #first line of file = songname
+
 ts = ts_results[0]
-#for aud_key, aud_val in ts.audio_summary.iteritems():
-#    print '    %-19s %s' % (aud_key, aud_val)
 audsum = requests.get(ts.audio_summary['analysis_url']).text
 for seg in json.loads(audsum)['segments']:
     line = ",".join(map(str,seg['timbre'])) #convert each segment into comma-delimited line
