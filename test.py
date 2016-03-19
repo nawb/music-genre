@@ -1,10 +1,13 @@
 from Matrix_cal import *
-
+import sys
 #**********************************************************************
+if len(sys.argv) == 1:
+                print("Usage: python test.py <test file list>")
 
-k = int(raw_input("Set k in KNN (k should be a odd integer):"))
+k = 3
+#int(raw_input("Set k in KNN (k should be a odd integer):"))
 
-with open("test_file",'r') as f:
+with open(sys.argv[1],'r') as f:
 		# read all lines in file as a list
 		# each element in the list represent a line in string form
 		test_list = f.read().splitlines()
@@ -18,12 +21,15 @@ for test_song in test_list:
 
 	Song = {'classical':0, 'country': 0, 'jazz':0, 'pop':0, 'rock':0, 'techno':0}
 
-	with open('train_list','r') as f:
+	with open('train_list_3','r') as f:
 		# read all lines in file as a list
 		# each element in the list represent a line in string form
 		train_list = f.read().splitlines()
 
 	UNLL_vector = []	# vector to store the UNLL value for each test song
+
+	# get feature matrix for test song
+	feature_matrix_test = read_file(test_song)
 	
 	for training_song in train_list:
 		
@@ -38,9 +44,6 @@ for test_song in test_list:
 		mean_vector_classical = get_classical_matrixes[0]
 		covariance_matrix_inversed = get_classical_matrixes[1:]
 
-		# get feature matrix for test song
-		feature_matrix_test = read_file(test_song)
-
 		# add UNLL value for given test song and training song, and the genre of training song to UNLL vector
 		UNLL_vector.append([get_UNLL(feature_matrix_test, mean_vector_classical, covariance_matrix_inversed), genre])
 
@@ -50,7 +53,19 @@ for test_song in test_list:
 	for i in range(k):
 		Song[UNLL_vector[i][1]] += 1	# get k neatest neighbor
 
-	result_genre = max(Song, key = Song.get)	# get the genre with highest vote
+	result_genre = ""
+
+	while True:
+		result_genre = max(Song, key = Song.get)	# get the genre with highest vote
+		max_vote = Song[result_genre]
+		if (list(Song.values())).count(max_vote) == 1:
+			break
+		else:
+			Song[UNLL_vector[k][1]] += 1
+			k = k+1
+
+	k = 3
+
 
 	if result_genre in test_song:
 		correct_result += 1.0
@@ -62,8 +77,9 @@ for test_song in test_list:
 
 	print '\n'
 '''
-
-print "The accuracy is:",correct_result / test_length
+if test_length != 1:
+                print "The accuracy is:",str(round(correct_result / test_length * 100))+'%'
+                #dont print accuracy if we're only testing one file
 
 
 

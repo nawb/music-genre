@@ -9,6 +9,6 @@ with open('train_list','r') as f:
 
 output_trained_matrix(train_list)
 
-print "Training Complete."
+print ("Training Complete.")
 
 

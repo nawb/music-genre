@@ -1,0 +1,9 @@
+Set the train_list and test_list as you like, as long as the data of the union of these two files is included in the dataset.
+
+$ python train.py 	// to train the data to get the mean vector and covariance matrix
+$ python test.py 	// to test the trained result use test_list
+
+$ ./run             // to test a single song
+
+python2.7 needed
+module needed: 
